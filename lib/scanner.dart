@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:immunization_mobile/custom_widgets/button_widget.dart';
+import 'package:immunization_mobile/custom_widgets/custom_colors.dart';
 
 class Scan extends StatefulWidget {
   @override
@@ -21,10 +23,13 @@ class _ScanState extends State<Scan> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(
-            'Scan QR code',
-            style: TextStyle(color: Colors.white),
-          ),
+          title: Text('Scan QR code',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 25.0,
+                fontFamily: "Poppins",
+                color: Colors.white,
+              )),
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true,
         ),
@@ -35,12 +40,14 @@ class _ScanState extends State<Scan> {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: RaisedButton(
-                    color: Colors.blue,
-                    textColor: Colors.white,
-                    splashColor: Colors.blueGrey,
-                    onPressed: scan,
-                    child: const Text('START SCANNER')),
+                child: ButtonWidget(
+                  color: Colors.orange,
+                  onTap: () {
+                    scan();
+                  },
+                  shadow: Color.fromRGBO(234, 154, 16, 0.72),
+                  text: "Scan Code",
+                ),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

@@ -11,7 +11,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Rem Health',
-      theme: ThemeData(primarySwatch: RemColors.green),
+      theme: ThemeData(
+        primarySwatch: RemColors.green,
+        cursorColor: RemColors.green,
+        accentColor: Colors.orange,
+      ),
       home: Login(),
       debugShowCheckedModeBanner: false,
     );

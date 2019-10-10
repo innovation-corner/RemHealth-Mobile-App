@@ -9,6 +9,7 @@ class InputText extends StatelessWidget {
   final Function onChanged;
   final bool obscureText;
   final cursorColor;
+  final Function onTap;
 
   const InputText(
       {Key key,
@@ -19,7 +20,8 @@ class InputText extends StatelessWidget {
       this.type,
       this.onChanged,
       this.obscureText,
-      this.cursorColor})
+      this.cursorColor,
+      this.onTap})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class InputText extends StatelessWidget {
           height: 6,
         ),
         TextField(
+          onTap: onTap,
           controller: controller,
           obscureText: obscureText,
           onChanged: (string) => onChanged(string),

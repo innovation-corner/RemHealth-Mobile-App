@@ -15,7 +15,7 @@ class Lists {
     {"value": 12, "text": 'Enugu'},
     {"value": 13, "text": 'Edo'},
     {"value": 14, "text": 'Ekiti'},
-    {"value": 15, "text": 'FCT - Abuja'},
+    {"value": 15, "text": 'Abuja'},
     {"value": 16, "text": 'Gombe'},
     {"value": 17, "text": 'Imo'},
     {"value": 18, "text": 'Jigawa'},
@@ -41,6 +41,8 @@ class Lists {
   ];
 
   static List localGovtList = <String>["string"];
+
+  static List phc = <String>["Phc 1"];
 
   List localAbia = [
     {"value": 0, "text": 'Aba North'},

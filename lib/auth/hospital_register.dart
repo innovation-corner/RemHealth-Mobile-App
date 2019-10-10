@@ -53,7 +53,9 @@ class _SignUpState extends State<SignUp> {
     if (address.text.length < 1 ||
         email.text.length < 1 ||
         contactName.text.length < 1 ||
-        hospitalName.text.length < 1) {
+        hospitalName.text.length < 1 ||
+        selectedStateIndex == 0 ||
+        selectedLocalIndex == 0) {
       setState(() {
         _error = "Please Fill in all fields";
       });

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:immunization_mobile/child%20screens/register_child.dart';
+import 'package:immunization_mobile/child%20screens/update_child.dart';
 
 import 'custom_widgets/custom_colors.dart';
 
@@ -35,7 +37,10 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => RegisterChild()));
+                      },
                       child: Container(
                         height: 180,
                         width: MediaQuery.of(context).size.width * 0.415,
@@ -61,7 +66,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => UpdateChild()));
+                      },
                       child: Container(
                         height: 180,
                         width: MediaQuery.of(context).size.width * 0.415,
