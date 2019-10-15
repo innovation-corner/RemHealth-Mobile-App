@@ -1,32 +1,83 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
+import 'package:immunization_mobile/bloc/bloc.dart';
+import 'package:immunization_mobile/bloc/bloc.dart' as prefix0;
 import 'package:immunization_mobile/custom_widgets/button_widget.dart';
 import 'package:immunization_mobile/custom_widgets/custom_colors.dart';
 import 'package:immunization_mobile/custom_widgets/input_text.dart';
+import 'package:path_provider/path_provider.dart';
 import '../lists.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
-class ConfirmImmunization extends StatefulWidget {
+class ReportDisease extends StatefulWidget {
   @override
-  _ConfirmImmunizationState createState() => _ConfirmImmunizationState();
+  _ReportDiseaseState createState() => _ReportDiseaseState();
 }
 
-class _ConfirmImmunizationState extends State<ConfirmImmunization> {
+class _ReportDiseaseState extends State<ReportDisease> {
+  final connectionBloc = ConnectionBloc();
+
   @override
   void initState() {
     super.initState();
-    selectedVaccine = Lists.vaccines[0];
+    selectedDisease = Lists.diseases[0];
+    // connectionBloc.dispatch(CheckInternet());
+    saveFile();
+    submit();
   }
+
+  readFile() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      print(directory.toString());
+      final file = File('${directory.path}/my_file.txt');
+      String text = await file.readAsString();
+      print(text);
+    } catch (e) {
+      print("Couldn't read file");
+    }
+  }
+
+  saveFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/my_file.txt');
+    final text = data.toString();
+    await file.writeAsString(text);
+    print('saved');
+  }
+
+  deleteFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/my_file.txt');
+    file.deleteSync(recursive: true);
+  }
+
+  submit() async {
+    data.add("second");
+    if (connectionBloc.connected == false) {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/my_file.txt');
+      final text = data.toString();
+      await file.writeAsString(text);
+      print('saved');
+
+      readFile();
+    }
+  }
+
+  List data = ["text"];
 
   //barcode details
   String barcode = "";
 
   //dropdown values
-  var selectedVaccine;
+  var selectedDisease;
 
   //indexes
   int selectedIndex = 0;
@@ -132,7 +183,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
                     }).toList(),
                     onChanged: (obj) {
                       setState(() {
-                        selectedVaccine = obj;
+                        selectedDisease = obj;
                         selectedIndex = items.indexOf(obj);
                       });
                     }),
@@ -152,7 +203,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          "Confirm Immunization",
+          "Report Disease",
           style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 25.0,
@@ -185,36 +236,32 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
             ),
             CheckboxGroup(
               labels: <String>[
-                "BCG",
-                "HBV 1",
-                "OPV",
-                "OPV 1",
-                "PCV 1",
-                "Rotarix 1",
-                "Pentavalent 1",
-                "OPV 2",
-                "Rotarix 2",
-                "PCV 2",
-                "Pentavalent 2",
-                "OPV 3",
-                "PCV 3",
-                "IPV",
-                "Rotarix 3",
-                "Pentavalent 3",
-                "Vitamin A1",
-                "Measles Vaccine",
-                "Yellow Fever vaccine",
-                "Meningitis vaccine",
-                "Vitamin A2",
-                "OPV booster",
-                "Measles 2",
-                "Typhoid Vaccine",
+                "Tuberculosis",
+                "Hepatitis",
+                "Poliomyelitis",
+                "Pneumonia",
+                "Diarrhoea",
+                "Diphtheria",
+                "Tetanus",
+                "Pertussis",
+                "Hepatitis B",
+                "Hemophilus Influenza type B",
+                "Poor vision",
+                "Measles",
+                "Yellow fever",
+                "Meningococcal Meningitis",
+                "Typhoid",
               ],
               // onChange: (bool isChecked, String label, int index) =>
               //     print("isChecked: $isChecked   label: $label  index: $index"),
               onSelected: (List<String> checked) =>
                   print("checked: ${checked.toString()}"),
             ),
+            // Container(
+            //   margin: EdgeInsets.symmetric(horizontal: 23),
+            //   child:
+            //       vaccineDropDown("Disease", "Select Disease", Lists.diseases),
+            // ),
             SizedBox(
               height: 40,
             ),
@@ -258,7 +305,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
                         });
                       },
                       shadow: Color.fromRGBO(70, 193, 13, 0.46),
-                      text: "Confirm Immunization",
+                      text: "Report Disease",
                     )
                   : Container(),
             ),

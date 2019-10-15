@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:immunization_mobile/custom_widgets/button_widget.dart';
 import 'package:immunization_mobile/custom_widgets/custom_colors.dart';
 
@@ -33,31 +34,53 @@ class _ScanState extends State<Scan> {
           iconTheme: IconThemeData(color: Colors.white),
           centerTitle: true,
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: ButtonWidget(
-                  color: Colors.orange,
-                  onTap: () {
-                    scan();
-                  },
-                  shadow: Color.fromRGBO(234, 154, 16, 0.72),
-                  text: "Scan Code",
-                ),
+        body: Column(
+          children: <Widget>[
+            CheckboxGroup(
+              labels: <String>[
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+              ],
+              disabled: ["Wednesday", "Friday"],
+              onChange: (bool isChecked, String label, int index) =>
+                  print("isChecked: $isChecked   label: $label  index: $index"),
+              onSelected: (List<String> checked) =>
+                  print("checked: ${checked.toString()}"),
+            ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: ButtonWidget(
+                      color: Colors.orange,
+                      onTap: () {
+                        scan();
+                      },
+                      shadow: Color.fromRGBO(234, 154, 16, 0.72),
+                      text: "Scan Code",
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: Text(
+                      barcode,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Text(
-                  barcode,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ));
   }
 

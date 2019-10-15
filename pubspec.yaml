@@ -24,6 +24,11 @@ dependencies:
   qr_flutter: ^1.1.1
   http:
   intl: ^0.16.0
+  shared_preferences: ^0.5.3+4
+  grouped_buttons: ^1.0.4
+  flutter_bloc: ^0.20.0
+  equatable: ^0.2.6
+  flutter_dotenv: ^2.0.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,6 +45,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - .env
 
   fonts:
     - family: Lato

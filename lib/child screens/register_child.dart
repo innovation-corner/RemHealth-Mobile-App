@@ -83,27 +83,9 @@ class _RegisterChildState extends State<RegisterChild> {
       });
       return false;
     }
-    if (careGiver.text.length < 11) {
+    if (phoneNumber.text.length < 11) {
       setState(() {
         _error = "Fill up your phone number";
-      });
-      return false;
-    }
-    if (password.text.length < 1) {
-      setState(() {
-        _error = "Fill up your password";
-      });
-      return false;
-    }
-    if (retypePassword.text.length < 1) {
-      setState(() {
-        _error = "Confirm your password";
-      });
-      return false;
-    }
-    if (retypePassword.text != password.text) {
-      setState(() {
-        _error = "Passwords do not match!";
       });
       return false;
     }
@@ -538,19 +520,6 @@ class _RegisterChildState extends State<RegisterChild> {
           children: <Widget>[
             SizedBox(
               height: 40,
-            ),
-            Center(
-              child: Text(
-                "REGISTER CHILD",
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 25.0,
-                    fontFamily: "Poppins",
-                    color: Colors.grey),
-              ),
-            ),
-            SizedBox(
-              height: 23.0,
             ),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 23),

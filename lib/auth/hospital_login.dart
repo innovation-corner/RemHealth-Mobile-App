@@ -1,9 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:immunization_mobile/auth/hospital_register.dart';
+import 'package:immunization_mobile/bloc/bloc.dart';
+import 'package:immunization_mobile/config/api.dart';
+import 'package:immunization_mobile/config/auth_details.dart';
 import 'package:immunization_mobile/custom_widgets/button_widget.dart';
 import 'package:immunization_mobile/custom_widgets/custom_colors.dart';
 import 'package:immunization_mobile/custom_widgets/input_text.dart';
 import 'package:immunization_mobile/home_page.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   @override
@@ -73,6 +82,49 @@ class _LoginState extends State<Login> {
       );
     }
     return Container();
+  }
+
+  loginUser() async {
+    Map<String, dynamic> inputData = {
+      "email": email.text.trim(),
+      "password": password.text.trim()
+    };
+
+    if (validateInput()) {
+      try {
+        http.Response response = await http.post(
+          Api.login,
+          body: json.encode(inputData),
+          headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+        );
+
+        var decodedResponse = json.decode(response.body);
+        int statusCode = response.statusCode;
+
+        if (statusCode != 200) {
+          setState(() {
+            _error = "An Error occured";
+          });
+          print(decodedResponse);
+        }
+
+        // save user details and token in shared preferences
+        await Authentication.storeToken(decodedResponse);
+
+        final _authenticationBloc =
+            BlocProvider.of<AuthenticationBloc>(context);
+        _authenticationBloc.dispatch(FetchAuthState());
+
+        // redirect to dashboard
+        Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(builder: (context) => HomePage()));
+      } catch (e) {
+        print(e);
+        setState(() {
+          _error = "An error Occured";
+        });
+      }
+    }
   }
 
   @override
@@ -153,8 +205,7 @@ class _LoginState extends State<Login> {
                               _loading = true;
                             });
                             validateInput();
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => HomePage()));
+                            loginUser();
                             setState(() {
                               _loading = false;
                             });

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:immunization_mobile/auth/hospital_login.dart';
+import 'package:immunization_mobile/child%20screens/confirm_immunization.dart';
 import 'package:immunization_mobile/child%20screens/register_child.dart';
+import 'package:immunization_mobile/child%20screens/report_disease.dart';
 import 'package:immunization_mobile/child%20screens/update_child.dart';
+import 'package:immunization_mobile/config/auth_details.dart';
 
+import 'bloc/authentication_bloc.dart';
+import 'bloc/authentication_event.dart';
 import 'custom_widgets/custom_colors.dart';
 
 class HomePage extends StatefulWidget {
@@ -103,7 +110,10 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ConfirmImmunization()));
+                      },
                       child: Container(
                         height: 180,
                         width: MediaQuery.of(context).size.width * 0.415,
@@ -129,7 +139,10 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ReportDisease()));
+                      },
                       child: Container(
                         height: 180,
                         width: MediaQuery.of(context).size.width * 0.415,
@@ -160,25 +173,30 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 25,
               ),
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      "Log Out",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        color: RemColors.red,
-                        fontSize: 22,
-                        // fontWeight: FontWeight.bold,
+              InkWell(
+                onTap: () {
+                  logOut();
+                },
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Log Out",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          color: RemColors.red,
+                          fontSize: 22,
+                          // fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: RemColors.red,
-                    ),
-                  ],
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: RemColors.red,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(
@@ -194,6 +212,17 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  logOut() async {
+    await Authentication.logout();
+
+    final _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    _authenticationBloc.dispatch(FetchAuthState());
+
+    // redirect to dashboard
+    Navigator.of(context)
+        .pushReplacement(new MaterialPageRoute(builder: (context) => Login()));
   }
 }
 
