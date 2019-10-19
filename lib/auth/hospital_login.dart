@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:immunization_mobile/auth/hospital_register.dart';
 import 'package:immunization_mobile/bloc/bloc.dart';
 import 'package:immunization_mobile/config/api.dart';
@@ -35,7 +34,6 @@ class _LoginState extends State<Login> {
   validateInput() {
     setState(() {
       _error = "";
-      _phoneError = "";
     });
     if (email.text.length < 1) {
       setState(() {
@@ -55,7 +53,6 @@ class _LoginState extends State<Login> {
 
   // stores the error state
   String _error = "";
-  String _phoneError = "";
 
 // shows the error on the screen if present
   Widget errorWidget() {
@@ -85,6 +82,9 @@ class _LoginState extends State<Login> {
   }
 
   loginUser() async {
+    setState(() {
+      _loading = true;
+    });
     Map<String, dynamic> inputData = {
       "email": email.text.trim(),
       "password": password.text.trim()
@@ -124,6 +124,9 @@ class _LoginState extends State<Login> {
           _error = "An error Occured";
         });
       }
+      setState(() {
+        _loading = false;
+      });
     }
   }
 
@@ -197,25 +200,19 @@ class _LoginState extends State<Login> {
                 errorWidget(),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 55),
-                  child: _loading == false
-                      ? ButtonWidget(
-                          color: RemColors.green,
-                          onTap: () {
-                            setState(() {
-                              _loading = true;
-                            });
-                            validateInput();
-                            loginUser();
-                            setState(() {
-                              _loading = false;
-                            });
-                          },
-                          shadow: Color.fromRGBO(70, 193, 13, 0.46),
-                          text: "Login",
-                        )
-                      : CircularProgressIndicator(
-                          backgroundColor: RemColors.green,
-                        ),
+                  child: Center(
+                    child: _loading == false
+                        ? ButtonWidget(
+                            color: RemColors.green,
+                            onTap: () {
+                              validateInput();
+                              loginUser();
+                            },
+                            shadow: Color.fromRGBO(70, 193, 13, 0.46),
+                            text: "Login",
+                          )
+                        : CircularProgressIndicator(),
+                  ),
                 ),
                 SizedBox(
                   height: 20,
@@ -236,15 +233,9 @@ class _LoginState extends State<Login> {
                       ? ButtonWidget(
                           color: Colors.orange,
                           onTap: () {
-                            setState(() {
-                              _loading = true;
-                            });
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) => SignUp()));
-                            setState(() {
-                              _loading = false;
-                            });
                           },
                           shadow: Color.fromRGBO(234, 154, 16, 0.72),
                           text: "Register",

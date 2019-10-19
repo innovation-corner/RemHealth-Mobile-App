@@ -12,5 +12,5 @@ class LoadingConnectionState extends ConnectionState {}
 class LoadedConnectionState extends ConnectionState {
   final bool connected;
 
-  LoadedConnectionState({@required this.connected});
+  LoadedConnectionState({@required this.connected}) : super([connected]);
 }

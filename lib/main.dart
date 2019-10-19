@@ -45,7 +45,7 @@ class _RemHealthHomeState extends State<RemHealthHome> {
     super.initState();
     connectionBloc.dispatch(CheckInternet());
     DotEnv().load('.env');
-    runCheck();
+    // runCheck();
     _authenticationBloc.dispatch(FetchAuthState());
   }
 

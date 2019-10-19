@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:immunization_mobile/custom_widgets/button_widget.dart';
 import 'package:immunization_mobile/custom_widgets/custom_colors.dart';
 import 'package:immunization_mobile/custom_widgets/input_text.dart';
-import 'package:immunization_mobile/scanner.dart';
 import '../lists.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -67,7 +66,6 @@ class _UpdateChildState extends State<UpdateChild> {
   validateInput() {
     setState(() {
       _error = "";
-      _phoneError = "";
     });
     if (fatherName.text.length < 1 ||
         phoneNumber.text.length < 1 ||
@@ -112,7 +110,6 @@ class _UpdateChildState extends State<UpdateChild> {
 
   // stores the error state
   String _error = "";
-  String _phoneError = "";
 
 // shows the error on the screen if present
   Widget errorWidget() {

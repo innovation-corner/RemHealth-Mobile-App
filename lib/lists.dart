@@ -90,4 +90,19 @@ class Lists {
     "Meningococcal Meningitis",
     "Typhoid",
   ];
+
+  static List languages = [
+    "Select Language",
+    "English",
+    "Pidgin",
+    "Yoruba",
+    "Igbo",
+    "Hausa",
+  ];
+
+  static List gender = [
+    "Select gender",
+    "Male",
+    "Female",
+  ];
 }

@@ -7,8 +7,10 @@ class Authentication {
 
     //store token
     String token = response['responseObj']['token'];
+    String id = response['responseObj']['user']['id'].toString();
 
     await prefs.setString('token', token);
+    await prefs.setString('id', id);
   }
 
   static getToken() async {
@@ -16,6 +18,13 @@ class Authentication {
     String token = prefs.getString('token') ?? "";
 
     return token;
+  }
+
+  static getId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String id = prefs.getString('id') ?? "";
+
+    return id;
   }
 
   static logout() async {
