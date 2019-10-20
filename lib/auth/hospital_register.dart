@@ -2,10 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:immunization_mobile/auth/hospital_login.dart';
+import 'package:immunization_mobile/bloc/bloc.dart';
+import 'package:immunization_mobile/config/api.dart';
+import 'package:immunization_mobile/config/auth_details.dart';
 import 'package:immunization_mobile/custom_widgets/button_widget.dart';
 import 'package:immunization_mobile/custom_widgets/custom_colors.dart';
 import 'package:immunization_mobile/custom_widgets/input_text.dart';
+import 'package:immunization_mobile/home_page.dart';
 import 'package:immunization_mobile/lists.dart';
 import 'package:http/http.dart' as http;
 
@@ -53,15 +58,17 @@ class _SignUpState extends State<SignUp> {
     if (address.text.length < 1 ||
         email.text.length < 1 ||
         contactName.text.length < 1 ||
-        hospitalName.text.length < 1) {
+        hospitalName.text.length < 1 ||
+        selectedStateIndex == 0 ||
+        selectedLocalIndex == 0) {
       setState(() {
         _error = "Please Fill in all fields";
       });
       return false;
     }
-    if (phoneNumber.text.length < 11) {
+    if (phoneNumber.text.length < 10) {
       setState(() {
-        _error = "Fill up your phone number";
+        _error = "Phone number must be at least 10 characters";
       });
       return false;
     }
@@ -117,28 +124,6 @@ class _SignUpState extends State<SignUp> {
     return Container();
   }
 
-// shows the error on the screen if present
-  Widget phoneErrorWidget() {
-    if (_phoneError.length > 0) {
-      return Column(
-        children: <Widget>[
-          SizedBox(
-            height: 2,
-          ),
-          Text(
-            _phoneError,
-            style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: Colors.red,
-                fontFamily: "Lato"),
-          ),
-        ],
-      );
-    }
-    return Container();
-  }
-
   Future getLocalGovt() async {
     var state = selectedState['text'];
     try {
@@ -158,6 +143,62 @@ class _SignUpState extends State<SignUp> {
 
       print(newLocals);
     } catch (e) {}
+  }
+
+  register() async {
+    Map<String, dynamic> inputData = {
+      "name": hospitalName.text.trim(),
+      "phonenumber": phoneNumber.text.trim(),
+      "email": email.text.trim(),
+      "password": password.text.trim(),
+      "address": address.text.trim(),
+      "state": selectedState['text'],
+      "lga": selectedLocalGovt,
+      "contactName": contactName.text.trim(),
+    };
+
+    if (validateInput()) {
+      setState(() {
+        _loading = true;
+      });
+      try {
+        http.Response response = await http.post(
+          Api.register,
+          body: json.encode(inputData),
+          headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+        );
+
+        var decodedResponse = json.decode(response.body);
+        int statusCode = response.statusCode;
+
+        if (statusCode != 200) {
+          setState(() {
+            _error = "An Error occured";
+          });
+          print(decodedResponse);
+        }
+
+        // save user details and token in shared preferences
+        await Authentication.storeToken(decodedResponse);
+
+        final _authenticationBloc =
+            BlocProvider.of<AuthenticationBloc>(context);
+        _authenticationBloc.dispatch(FetchAuthState());
+
+        // redirect to dashboard
+        Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(builder: (context) => HomePage()));
+      } catch (e) {
+        print(e);
+        setState(() {
+          _error = "An error Occured";
+        });
+        print(json.encode(inputData));
+      }
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   Widget stateDropDown(String text, String hint, List items) {
@@ -456,24 +497,19 @@ class _SignUpState extends State<SignUp> {
               errorWidget(),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 55),
-                child: _loading == false
-                    ? ButtonWidget(
-                        color: RemColors.green,
-                        onTap: () {
-                          setState(() {
-                            _loading = true;
-                          });
-                          validateInput();
-                          setState(() {
-                            _loading = false;
-                          });
-                        },
-                        shadow: Color.fromRGBO(70, 193, 13, 0.46),
-                        text: "Register",
-                      )
-                    : CircularProgressIndicator(
-                        backgroundColor: RemColors.green,
-                      ),
+                child: Center(
+                  child: _loading == false
+                      ? ButtonWidget(
+                          color: RemColors.green,
+                          onTap: () {
+                            validateInput();
+                            register();
+                          },
+                          shadow: Color.fromRGBO(70, 193, 13, 0.46),
+                          text: "Register",
+                        )
+                      : CircularProgressIndicator(),
+                ),
               ),
               SizedBox(
                 height: 20,
@@ -494,14 +530,8 @@ class _SignUpState extends State<SignUp> {
                     ? ButtonWidget(
                         color: Colors.orange,
                         onTap: () {
-                          setState(() {
-                            _loading = true;
-                          });
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => Login()));
-                          setState(() {
-                            _loading = false;
-                          });
                         },
                         shadow: Color.fromRGBO(234, 154, 16, 0.72),
                         text: "Back To Login",

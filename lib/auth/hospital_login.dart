@@ -1,9 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:immunization_mobile/auth/hospital_register.dart';
+import 'package:immunization_mobile/bloc/bloc.dart';
+import 'package:immunization_mobile/config/api.dart';
+import 'package:immunization_mobile/config/auth_details.dart';
 import 'package:immunization_mobile/custom_widgets/button_widget.dart';
 import 'package:immunization_mobile/custom_widgets/custom_colors.dart';
 import 'package:immunization_mobile/custom_widgets/input_text.dart';
 import 'package:immunization_mobile/home_page.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   @override
@@ -26,7 +34,6 @@ class _LoginState extends State<Login> {
   validateInput() {
     setState(() {
       _error = "";
-      _phoneError = "";
     });
     if (email.text.length < 1) {
       setState(() {
@@ -46,7 +53,6 @@ class _LoginState extends State<Login> {
 
   // stores the error state
   String _error = "";
-  String _phoneError = "";
 
 // shows the error on the screen if present
   Widget errorWidget() {
@@ -73,6 +79,55 @@ class _LoginState extends State<Login> {
       );
     }
     return Container();
+  }
+
+  loginUser() async {
+    setState(() {
+      _loading = true;
+    });
+    Map<String, dynamic> inputData = {
+      "email": email.text.trim(),
+      "password": password.text.trim()
+    };
+
+    if (validateInput()) {
+      try {
+        http.Response response = await http.post(
+          Api.login,
+          body: json.encode(inputData),
+          headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+        );
+
+        var decodedResponse = json.decode(response.body);
+        int statusCode = response.statusCode;
+
+        if (statusCode != 200) {
+          setState(() {
+            _error = "An Error occured";
+          });
+          print(decodedResponse);
+        }
+
+        // save user details and token in shared preferences
+        await Authentication.storeToken(decodedResponse);
+
+        final _authenticationBloc =
+            BlocProvider.of<AuthenticationBloc>(context);
+        _authenticationBloc.dispatch(FetchAuthState());
+
+        // redirect to dashboard
+        Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(builder: (context) => HomePage()));
+      } catch (e) {
+        print(e);
+        setState(() {
+          _error = "An error Occured";
+        });
+      }
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -145,26 +200,19 @@ class _LoginState extends State<Login> {
                 errorWidget(),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 55),
-                  child: _loading == false
-                      ? ButtonWidget(
-                          color: RemColors.green,
-                          onTap: () {
-                            setState(() {
-                              _loading = true;
-                            });
-                            validateInput();
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => HomePage()));
-                            setState(() {
-                              _loading = false;
-                            });
-                          },
-                          shadow: Color.fromRGBO(70, 193, 13, 0.46),
-                          text: "Login",
-                        )
-                      : CircularProgressIndicator(
-                          backgroundColor: RemColors.green,
-                        ),
+                  child: Center(
+                    child: _loading == false
+                        ? ButtonWidget(
+                            color: RemColors.green,
+                            onTap: () {
+                              validateInput();
+                              loginUser();
+                            },
+                            shadow: Color.fromRGBO(70, 193, 13, 0.46),
+                            text: "Login",
+                          )
+                        : CircularProgressIndicator(),
+                  ),
                 ),
                 SizedBox(
                   height: 20,
@@ -185,15 +233,9 @@ class _LoginState extends State<Login> {
                       ? ButtonWidget(
                           color: Colors.orange,
                           onTap: () {
-                            setState(() {
-                              _loading = true;
-                            });
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) => SignUp()));
-                            setState(() {
-                              _loading = false;
-                            });
                           },
                           shadow: Color.fromRGBO(234, 154, 16, 0.72),
                           text: "Register",
