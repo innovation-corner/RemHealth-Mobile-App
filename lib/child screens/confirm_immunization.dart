@@ -43,7 +43,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
   Map<String, double> userLocation;
 
   runCheck() {
-    var oneSec = Duration(seconds: 5);
+    var oneSec = Duration(seconds: 3);
     Timer.periodic(oneSec, (Timer t) async {
       final directory = await getApplicationDocumentsDirectory();
       final file = File('${directory.path}/vaccine.json');

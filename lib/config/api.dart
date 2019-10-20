@@ -4,7 +4,7 @@ class Api {
   static String baseUrl = DotEnv().env['ENDPOINT'];
 
   //auth
-  static String register = baseUrl + "hospital/add";
+  static String register = baseUrl + "auth/hospital";
   static String login = baseUrl + "auth/login";
 
   //get IM code
@@ -14,6 +14,9 @@ class Api {
 
   //add child
   static String registerChild = baseUrl + "info/add";
+
+  //edit child details
+  static editChild(code) => baseUrl + "info/edit/$code";
 
   //confirm immunization
   static confirmImmunization(id) => baseUrl + "immunization/add/$id";

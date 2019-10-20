@@ -66,9 +66,9 @@ class _SignUpState extends State<SignUp> {
       });
       return false;
     }
-    if (phoneNumber.text.length < 11) {
+    if (phoneNumber.text.length < 10) {
       setState(() {
-        _error = "Fill up your phone number";
+        _error = "Phone number must be at least 10 characters";
       });
       return false;
     }
@@ -146,9 +146,6 @@ class _SignUpState extends State<SignUp> {
   }
 
   register() async {
-    setState(() {
-      _loading = true;
-    });
     Map<String, dynamic> inputData = {
       "name": hospitalName.text.trim(),
       "phonenumber": phoneNumber.text.trim(),
@@ -161,6 +158,9 @@ class _SignUpState extends State<SignUp> {
     };
 
     if (validateInput()) {
+      setState(() {
+        _loading = true;
+      });
       try {
         http.Response response = await http.post(
           Api.register,
@@ -193,6 +193,7 @@ class _SignUpState extends State<SignUp> {
         setState(() {
           _error = "An error Occured";
         });
+        print(json.encode(inputData));
       }
       setState(() {
         _loading = false;

@@ -101,23 +101,24 @@ class _RegisterChildState extends State<RegisterChild> {
       });
       return false;
     }
-    if (phoneNumber.text.length < 11) {
+    if (phoneNumber.text.length < 10) {
       setState(() {
-        _error = "Fill up phone number";
+        _error = "Phone Number must be at least 10 numbers";
       });
       return false;
     }
-    // if (barcode.length == 0) {
-    //   setState(() {
-    //     _error = "Scan QR code";
-    //   });
-    //   return false;
-    // }
+    if (barcode.length < 2) {
+      setState(() {
+        _error = "Scan QR code";
+      });
+      return false;
+    }
     return true;
   }
 
   // stores the error state
   String _error = "";
+
   String _success = "";
 
 // shows the error on the screen if present
@@ -148,7 +149,7 @@ class _RegisterChildState extends State<RegisterChild> {
   }
 
   Widget successWidget() {
-    if (_error.length > 0) {
+    if (_success.length > 0) {
       return Center(
         child: Column(
           children: <Widget>[
@@ -158,9 +159,9 @@ class _RegisterChildState extends State<RegisterChild> {
             Text(
               _error,
               style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.red,
+                  color: Colors.green,
                   fontFamily: "Lato"),
             ),
             SizedBox(
@@ -476,7 +477,7 @@ class _RegisterChildState extends State<RegisterChild> {
   }
 
   runCheck() {
-    var oneSec = Duration(seconds: 5);
+    var oneSec = Duration(seconds: 3);
     Timer.periodic(oneSec, (Timer t) async {
       final directory = await getApplicationDocumentsDirectory();
       final file = File('${directory.path}/child.json');
@@ -495,15 +496,15 @@ class _RegisterChildState extends State<RegisterChild> {
       List jsonContent = json.decode(file.readAsStringSync());
 
       for (var obj in jsonContent) {
-        Map data = {
-          'name': jsonContent,
-          'dob': selectedDate.toIso8601String(),
-          'phonenumber': phoneNumber.text,
-          'state': selectedState['text'],
-          'lga': selectedLocalGovt,
-          'language': selectedLanguage,
-          'gender': selectedGender,
-        };
+        // Map data = {
+        //   'name': jsonContent,
+        //   'dob': selectedDate.toIso8601String(),
+        //   'phonenumber': phoneNumber.text,
+        //   'state': selectedState['text'],
+        //   'lga': selectedLocalGovt,
+        //   'language': selectedLanguage,
+        //   'gender': selectedGender,
+        // };
         try {
           String token = await Authentication.getToken();
 
@@ -558,6 +559,7 @@ class _RegisterChildState extends State<RegisterChild> {
       'lga': selectedLocalGovt,
       'language': selectedLanguage,
       'gender': selectedGender,
+      'qrCode': barcode
     };
 
     childList.add(data);
@@ -604,6 +606,7 @@ class _RegisterChildState extends State<RegisterChild> {
         'lga': selectedLocalGovt,
         'language': selectedLanguage,
         'gender': selectedGender,
+        'qrCode': barcode
       };
 
       try {
@@ -617,8 +620,6 @@ class _RegisterChildState extends State<RegisterChild> {
             HttpHeaders.authorizationHeader: "Bearer $token"
           },
         );
-
-        print(json.encode(obj));
 
         var decodedResponse = json.decode(response.body);
 
@@ -635,11 +636,10 @@ class _RegisterChildState extends State<RegisterChild> {
         print(decodedResponse);
       } catch (e) {
         print("error: $e");
+        setState(() {
+          _error = 'An error occured.';
+        });
       }
-    } else {
-      setState(() {
-        _error = "Fill in all fields";
-      });
     }
     setState(() {
       _loading = false;
@@ -761,7 +761,6 @@ class _RegisterChildState extends State<RegisterChild> {
                         color: Colors.orange,
                         onTap: () {
                           scan();
-                          validateInput();
                         },
                         shadow: Color.fromRGBO(234, 154, 16, 0.72),
                         text: "Capture QR Code",
@@ -799,7 +798,10 @@ class _RegisterChildState extends State<RegisterChild> {
   Future scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
-      setState(() => this.barcode = barcode);
+      setState(() {
+        this.barcode = barcode;
+        _error = '';
+      });
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {

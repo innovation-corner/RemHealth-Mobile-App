@@ -50,7 +50,7 @@ class _RemHealthHomeState extends State<RemHealthHome> {
   }
 
   runCheck() {
-    var oneSec = Duration(seconds: 5);
+    var oneSec = Duration(seconds: 3);
     Timer.periodic(oneSec, (Timer t) {
       connectionBloc.dispatch(CheckInternet());
     });
