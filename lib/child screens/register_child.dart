@@ -798,24 +798,19 @@ class _RegisterChildState extends State<RegisterChild> {
   Future scan() async {
     try {
       String barcode = await BarcodeScanner.scan();
-      setState(() {
-        this.barcode = barcode;
-        _error = '';
-      });
+      setState(() => this.barcode = barcode);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          this.barcode = 'The user did not grant the camera permission!';
           _error = 'Please Grant Camera Access';
         });
       } else {
         setState(() => this.barcode = 'Unknown error: $e');
       }
     } on FormatException {
-      setState(() => this.barcode =
-          'null (User returned using the "back"-button before scanning anything. Result)');
+      setState(() => this._error = 'Could not scan code');
     } catch (e) {
-      setState(() => this.barcode = 'Unknown error: $e');
+      setState(() => this._error = 'could not scan code');
     }
   }
 }

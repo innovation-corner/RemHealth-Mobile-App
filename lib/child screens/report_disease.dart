@@ -34,11 +34,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
     selectedState = Lists.stateList[0];
     selectedLocalGovt = Lists.localGovtList[0];
     runCheck();
-    location.onLocationChanged().listen((value) {
-      setState(() {
-        userLocation = value;
-      });
-    });
+    _getLocation();
   }
 
   //location
@@ -424,6 +420,14 @@ class _ReportDiseaseState extends State<ReportDisease> {
       });
       return false;
     }
+
+    if (userLocation == null) {
+      setState(() {
+        _error = "Please Turn On GPS!";
+      });
+      return false;
+    }
+
     return true;
   }
 
@@ -637,6 +641,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
                           _success = '';
                           _error = '';
                         });
+                        _getLocation();
                         if (connectionBloc.connected == false) {
                           save();
                         } else {
@@ -662,17 +667,15 @@ class _ReportDiseaseState extends State<ReportDisease> {
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          this.barcode = 'The user did not grant the camera permission!';
           _error = 'Please Grant Camera Access';
         });
       } else {
         setState(() => this.barcode = 'Unknown error: $e');
       }
     } on FormatException {
-      setState(() => this.barcode =
-          'null (User returned using the "back"-button before scanning anything. Result)');
+      setState(() => this._error = 'Could not scan code');
     } catch (e) {
-      setState(() => this.barcode = 'Unknown error: $e');
+      setState(() => this._error = 'could not scan code');
     }
   }
 

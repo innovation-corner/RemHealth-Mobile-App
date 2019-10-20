@@ -30,11 +30,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
     super.initState();
     connectionBloc.dispatch(CheckInternet());
     runCheck();
-    location.onLocationChanged().listen((value) {
-      setState(() {
-        userLocation = value;
-      });
-    });
+    _getLocation();
   }
 
   //location
@@ -253,7 +249,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
       print(e);
     }
     setState(() {
-      _loading = true;
+      _loading = false;
     });
   }
 
@@ -282,6 +278,14 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
       });
       return false;
     }
+
+    if (userLocation == null) {
+      setState(() {
+        _error = "Please Turn On GPS!";
+      });
+      return false;
+    }
+
     return true;
   }
 
@@ -449,6 +453,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
                           _success = '';
                           _error = '';
                         });
+                        _getLocation();
                         if (connectionBloc.connected == false) {
                           save();
                         } else {
@@ -474,17 +479,15 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          this.barcode = 'The user did not grant the camera permission!';
           _error = 'Please Grant Camera Access';
         });
       } else {
         setState(() => this.barcode = 'Unknown error: $e');
       }
     } on FormatException {
-      setState(() => this.barcode =
-          'null (User returned using the "back"-button before scanning anything. Result)');
+      setState(() => this._error = 'Could not scan code');
     } catch (e) {
-      setState(() => this.barcode = 'Unknown error: $e');
+      setState(() => this._error = 'could not scan code');
     }
   }
 
@@ -492,6 +495,9 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
     var currentLocation = <String, double>{};
     try {
       currentLocation = await location.getLocation();
+      setState(() {
+        userLocation = currentLocation;
+      });
     } catch (e) {
       currentLocation = null;
       print(e);

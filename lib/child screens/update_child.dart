@@ -698,7 +698,7 @@ class _UpdateChildState extends State<UpdateChild> {
         try {
           String token = await Authentication.getToken();
 
-          http.Response response = await http.post(
+          http.Response response = await http.put(
             Api.editChild(obj['code']),
             body: json.encode(obj),
             headers: {
@@ -803,7 +803,7 @@ class _UpdateChildState extends State<UpdateChild> {
       try {
         String token = await Authentication.getToken();
 
-        http.Response response = await http.post(
+        http.Response response = await http.put(
           Api.editChild(reg.text),
           body: json.encode(obj),
           headers: {
@@ -1030,7 +1030,7 @@ class _UpdateChildState extends State<UpdateChild> {
       print(e);
     }
     setState(() {
-      _loading = true;
+      _loading = false;
     });
   }
 
@@ -1042,17 +1042,15 @@ class _UpdateChildState extends State<UpdateChild> {
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         setState(() {
-          this.barcode = 'The user did not grant the camera permission!';
           _error = 'Please Grant Camera Access';
         });
       } else {
         setState(() => this.barcode = 'Unknown error: $e');
       }
     } on FormatException {
-      setState(() => this.barcode =
-          'null (User returned using the "back"-button before scanning anything. Result)');
+      setState(() => this._error = 'Could not scan code');
     } catch (e) {
-      setState(() => this.barcode = 'Unknown error: $e');
+      setState(() => this._error = 'could not scan code');
     }
   }
 }
