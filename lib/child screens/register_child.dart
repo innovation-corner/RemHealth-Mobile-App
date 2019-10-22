@@ -157,7 +157,7 @@ class _RegisterChildState extends State<RegisterChild> {
               height: 2,
             ),
             Text(
-              _error,
+              _success,
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -625,11 +625,19 @@ class _RegisterChildState extends State<RegisterChild> {
 
         if (decodedResponse['message'] == 'Data saved') {
           setState(() {
+            childName.text = '';
+            dateOfBirth.text = '';
+            phoneNumber.text = '';
+            genderIndex = 0;
+            languageIndex = 0;
+            barcode = '';
             _success = "Registered!";
+            _loading = false;
           });
         } else {
           setState(() {
-            _error = "Could not register!";
+            _error = decodedResponse['message'];
+            _loading = false;
           });
         }
 
@@ -754,7 +762,7 @@ class _RegisterChildState extends State<RegisterChild> {
             ),
             _success.length > 0 ? successWidget() : errorWidget(),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 55),
+              margin: EdgeInsets.symmetric(horizontal: 65),
               child: Center(
                 child: _loading == false
                     ? ButtonWidget(

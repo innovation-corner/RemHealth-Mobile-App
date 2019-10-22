@@ -45,6 +45,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
       final file = File('${directory.path}/vaccine.json');
       bool fileExists = file.existsSync();
       connectionBloc.dispatch(CheckInternet());
+      _getLocation();
       if (fileExists == true) {
         submitOffline();
       }
@@ -77,7 +78,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
             String id = await Authentication.getId();
 
             http.Response response = await http.post(
-              Api.confirmImmunization(id),
+              Api.confirmImmunization(jsonContent[i]['immunizationCode']),
               body: json.encode(data),
               headers: {
                 HttpHeaders.contentTypeHeader: 'application/json',
@@ -89,9 +90,11 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
 
             print(decodedResponse);
 
-            setState(() {
-              offlineList = [];
-            });
+            if (this.mounted) {
+              setState(() {
+                offlineList = [];
+              });
+            }
           } catch (e) {
             print("error: $e");
           }
@@ -107,9 +110,11 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
       print(directory.toString());
       final file = File('${directory.path}/vaccine.json');
       List jsonContent = json.decode(file.readAsStringSync());
-      setState(() {
-        offlineList = jsonContent;
-      });
+      if (this.mounted) {
+        setState(() {
+          offlineList = jsonContent;
+        });
+      }
       print(offlineList);
     } catch (e) {
       print("Couldn't read file vaccine.json : $e");
@@ -148,10 +153,11 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
         print('saved vaccine.json');
       }
 
-      setState(() {
-        _success = "Immunization Saved!";
-      });
-
+      if (this.mounted) {
+        setState(() {
+          _success = "Immunization Saved!";
+        });
+      }
       readFile();
     }
   }
@@ -164,10 +170,12 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
 
   submit() async {
     if (connectionBloc.connected == true && reg.text.length > 1) {
-      setState(() {
-        _error = "";
-        _loading = true;
-      });
+      if (this.mounted) {
+        setState(() {
+          _error = "";
+          _loading = true;
+        });
+      }
 
       Map obj = {
         'immunizationCode': reg.text,
@@ -185,7 +193,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
           String id = await Authentication.getId();
 
           http.Response response = await http.post(
-            Api.confirmImmunization(id),
+            Api.confirmImmunization(reg.text.trim()),
             body: json.encode(obj),
             headers: {
               HttpHeaders.contentTypeHeader: 'application/json',
@@ -196,34 +204,40 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
           var decodedResponse = json.decode(response.body);
 
           if (decodedResponse['message'] == 'saved') {
-            setState(() {
-              _success = "Immunization Confirmed!";
-            });
+            if (this.mounted) {
+              setState(() {
+                _success = "Immunization Confirmed!";
+                _loading = false;
+              });
+            }
           } else {
-            setState(() {
-              _error = "Could not confirm immunization!";
-            });
+            if (this.mounted) {
+              setState(() {
+                _error = decodedResponse['message'];
+                _loading = false;
+              });
+            }
           }
-
           print(decodedResponse);
         } catch (e) {
           print("error: $e");
         }
       }
     } else {
-      setState(() {
-        _error = "Fill in immunization code or scan qr code";
-      });
+      if (this.mounted) {
+        setState(() {
+          _error = "Fill in immunization code or scan qr code";
+        });
+      }
     }
-    setState(() {
-      _loading = false;
-    });
   }
 
   getCode() async {
-    setState(() {
-      _loading = true;
-    });
+    if (this.mounted) {
+      setState(() {
+        _loading = true;
+      });
+    }
     try {
       String token = await Authentication.getToken();
 
@@ -240,17 +254,20 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
       print(decodedResponse);
 
       String code = decodedResponse['data']['rows'][0]['immunizationCode'];
-
-      setState(() {
-        _error = '';
-        reg.text = code;
-      });
+      if (this.mounted) {
+        setState(() {
+          _error = '';
+          reg.text = code;
+        });
+      }
     } catch (e) {
       print(e);
     }
-    setState(() {
-      _loading = false;
-    });
+    if (this.mounted) {
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   //barcode details
@@ -269,9 +286,11 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
   bool _loading = false;
 
   validateInput() {
-    setState(() {
-      _error = "";
-    });
+    if (this.mounted) {
+      setState(() {
+        _error = "";
+      });
+    }
     if (reg.text.length < 1 || selectedIndex == 0) {
       setState(() {
         _error = "Please Fill in all fields";
@@ -416,16 +435,18 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
                   "Typhoid Vaccine",
                 ],
                 onSelected: (List<String> checked) {
-                  setState(() {
-                    vaccines = checked;
-                  });
+                  if (this.mounted) {
+                    setState(() {
+                      vaccines = checked;
+                    });
+                  }
                 }),
             SizedBox(
               height: 20,
             ),
             _success.length > 0 ? successWidget() : errorWidget(),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 55),
+              margin: EdgeInsets.symmetric(horizontal: 65),
               child: Center(
                 child: _loading == false
                     ? ButtonWidget(
@@ -495,9 +516,11 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
     var currentLocation = <String, double>{};
     try {
       currentLocation = await location.getLocation();
-      setState(() {
-        userLocation = currentLocation;
-      });
+      if (this.mounted) {
+        setState(() {
+          userLocation = currentLocation;
+        });
+      }
     } catch (e) {
       currentLocation = null;
       print(e);

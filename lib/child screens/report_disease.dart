@@ -228,7 +228,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       List jsonContent = json.decode(file.readAsStringSync());
 
       Map data = {
-        'immunizationCode': reg.text,
+        'immunizationCode': '',
         'type': '',
         'state': '',
         'lga': '',
@@ -250,7 +250,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
             String id = await Authentication.getId();
 
             http.Response response = await http.post(
-              Api.reportDisease(id),
+              Api.reportDisease(jsonContent[i]['immunizationCode']),
               body: json.encode(data),
               headers: {
                 HttpHeaders.contentTypeHeader: 'application/json',
@@ -297,7 +297,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
 
   save() async {
     Map data = {
-      'immunizationCode': reg.text,
+      'immunizationCode': reg.text.trim(),
       'disease': diseases,
       'state': selectedState['text'],
       'lga': selectedLocalGovt,
@@ -360,7 +360,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
           String id = await Authentication.getId();
 
           http.Response response = await http.post(
-            Api.reportDisease(id),
+            Api.reportDisease(reg.text.trim()),
             body: json.encode(obj),
             headers: {
               HttpHeaders.contentTypeHeader: 'application/json',
@@ -374,11 +374,14 @@ class _ReportDiseaseState extends State<ReportDisease> {
 
           if (response.statusCode == 200) {
             setState(() {
+              
               _success = "Disease Reported";
+              _loading = false;
             });
           } else {
             setState(() {
-              _error = "Could not report Disease!";
+              _error = decodedResponse['message'];
+              _loading = false;
             });
           }
         } catch (e) {
@@ -607,7 +610,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
             ),
             _success.length > 0 ? successWidget() : errorWidget(),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 55),
+              margin: EdgeInsets.symmetric(horizontal: 65),
               child: Center(
                 child: _loading == false
                     ? ButtonWidget(
@@ -683,9 +686,11 @@ class _ReportDiseaseState extends State<ReportDisease> {
     var currentLocation = <String, double>{};
     try {
       currentLocation = await location.getLocation();
-      setState(() {
-        userLocation = currentLocation;
-      });
+      if (this.mounted) {
+        setState(() {
+          userLocation = currentLocation;
+        });
+      }
     } catch (e) {
       currentLocation = null;
       print(e);

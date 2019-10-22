@@ -172,22 +172,23 @@ class _SignUpState extends State<SignUp> {
         int statusCode = response.statusCode;
 
         if (statusCode != 200) {
+          print(statusCode);
           setState(() {
-            _error = "An Error occured";
+            _error = decodedResponse['message'];
           });
           print(decodedResponse);
+        } else {
+          // save user details and token in shared preferences
+          await Authentication.storeToken(decodedResponse);
+
+          final _authenticationBloc =
+              BlocProvider.of<AuthenticationBloc>(context);
+          _authenticationBloc.dispatch(FetchAuthState());
+
+          // redirect to dashboard
+          Navigator.of(context).pushReplacement(
+              new MaterialPageRoute(builder: (context) => HomePage()));
         }
-
-        // save user details and token in shared preferences
-        await Authentication.storeToken(decodedResponse);
-
-        final _authenticationBloc =
-            BlocProvider.of<AuthenticationBloc>(context);
-        _authenticationBloc.dispatch(FetchAuthState());
-
-        // redirect to dashboard
-        Navigator.of(context).pushReplacement(
-            new MaterialPageRoute(builder: (context) => HomePage()));
       } catch (e) {
         print(e);
         setState(() {
@@ -349,7 +350,7 @@ class _SignUpState extends State<SignUp> {
               Center(
                 child: Image.asset(
                   "assets/logo_icon.png",
-                  height: MediaQuery.of(context).size.height * 0.2,
+                  height: MediaQuery.of(context).size.height * 0.1,
                 ),
               ),
               SizedBox(
@@ -496,7 +497,7 @@ class _SignUpState extends State<SignUp> {
               ),
               errorWidget(),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 55),
+                margin: EdgeInsets.symmetric(horizontal: 65),
                 child: Center(
                   child: _loading == false
                       ? ButtonWidget(
@@ -525,7 +526,7 @@ class _SignUpState extends State<SignUp> {
                 height: 20,
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 55),
+                margin: EdgeInsets.symmetric(horizontal: 65),
                 child: _loading == false
                     ? ButtonWidget(
                         color: Colors.orange,

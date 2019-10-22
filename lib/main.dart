@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: RemColors.green,
           cursorColor: RemColors.green,
-          accentColor: Colors.orange,
+          accentColor: Colors.blue,
         ),
         home: RemHealthHome(),
         debugShowCheckedModeBanner: false,

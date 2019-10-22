@@ -150,7 +150,7 @@ class _UpdateChildState extends State<UpdateChild> {
               height: 2,
             ),
             Text(
-              _error,
+              _success,
               style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -804,7 +804,7 @@ class _UpdateChildState extends State<UpdateChild> {
         String token = await Authentication.getToken();
 
         http.Response response = await http.put(
-          Api.editChild(reg.text),
+          Api.editChild(reg.text.trim()),
           body: json.encode(obj),
           headers: {
             HttpHeaders.contentTypeHeader: 'application/json',
@@ -816,11 +816,19 @@ class _UpdateChildState extends State<UpdateChild> {
 
         if (decodedResponse['message'] == 'Data updated') {
           setState(() {
+            childName.text = '';
+            dateOfBirth.text = '';
+            phoneNumber.text = '';
+            genderIndex = 0;
+            languageIndex = 0;
+            barcode = '';
             _success = "Data Updated!";
+            _loading = false;
           });
         } else {
           setState(() {
-            _error = "Could not update details!";
+            _error = decodedResponse['message'];
+            _loading = false;
           });
         }
 
@@ -960,7 +968,7 @@ class _UpdateChildState extends State<UpdateChild> {
             ),
             _success.length > 0 ? successWidget() : errorWidget(),
             Container(
-              margin: EdgeInsets.symmetric(horizontal: 55),
+              margin: EdgeInsets.symmetric(horizontal: 65),
               child: Center(
                 child: _loading == false
                     ? ButtonWidget(
@@ -979,7 +987,7 @@ class _UpdateChildState extends State<UpdateChild> {
             ),
             Container(
               margin: EdgeInsets.only(left: 55, right: 55, bottom: 40),
-              child: _loading == false && barcode == ""
+              child: _loading == false
                   ? ButtonWidget(
                       color: RemColors.green,
                       onTap: () {

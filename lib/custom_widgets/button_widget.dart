@@ -22,7 +22,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
         padding: EdgeInsets.symmetric(vertical: 18, horizontal: 35),
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
-            color: widget.shadow,
+            color: Colors.blue[200],
             blurRadius: 20.0, // has the effect of softening the shadow
             spreadRadius: 0, // has the effect of extending the shadow
             offset: Offset(
@@ -30,7 +30,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
               5.0, // vertical, move down 10
             ),
           )
-        ], borderRadius: BorderRadius.circular(6), color: widget.color),
+        ], borderRadius: BorderRadius.circular(6), color: Colors.blue),
         child: Center(
             child: Text(widget.text,
                 style: TextStyle(
