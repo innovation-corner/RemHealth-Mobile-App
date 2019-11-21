@@ -206,8 +206,11 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
           if (decodedResponse['message'] == 'saved') {
             if (this.mounted) {
               setState(() {
-                _success = "Immunization Confirmed!";
+                _success = "Confirmed for $childName!";
                 _loading = false;
+                hasId = false;
+                reg.text = '';
+                labels = [];
               });
             }
           } else {
@@ -268,6 +271,84 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
         _loading = false;
       });
     }
+  }
+
+  bool hasId = false;
+
+  String childId;
+
+  String childName;
+
+  List childVaccines = <String>[];
+
+  List labels = <String>[];
+
+  Future getChildId(code) async {
+    setState(() {
+      _loading = true;
+    });
+
+    try {
+      String token = await Authentication.getToken();
+
+      http.Response response = await http.get(
+        Api.getDetailsByIm(code),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader: "Bearer $token"
+        },
+      );
+
+      var details = json.decode(response.body);
+
+      String id = details['data']['id'].toString();
+
+      String name = details['data']['name'];
+
+      http.Response im = await http.get(
+        Api.listImmunization(id),
+        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},
+      );
+
+      var imList = json.decode(im.body);
+
+      List imlist2 = imList['data'];
+
+      for (var item in imList['data']) {
+        childVaccines.add(item['type']);
+      }
+
+      http.Response vaccineList = await http.get(
+        Api.getVaccines,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.authorizationHeader: "Bearer $token"
+        },
+      );
+
+      var decodedResponse = json.decode(vaccineList.body);
+      List items = decodedResponse['vaccines'];
+
+      for (var item in items) {
+        labels.add(item['name']);
+      }
+
+      setState(() {
+        childId = id;
+
+        hasId = true;
+        childName = name;
+      });
+    } catch (e) {
+      print(e);
+      setState(() {
+        _error = "An error occured";
+      });
+    }
+
+    setState(() {
+      _loading = false;
+    });
   }
 
   //barcode details
@@ -379,7 +460,7 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
           "Confirm Immunization",
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 25.0,
+            fontSize: 17.0,
             fontFamily: "Poppins",
             color: Colors.white,
           ),
@@ -392,103 +473,168 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
             SizedBox(
               height: 40,
             ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 23),
-              child: InputText(
-                cursorColor: RemColors.green,
-                obscureText: false,
-                label: "Immunization Number",
-                focusColor: RemColors.green,
-                borderColor: Colors.grey,
-                controller: reg,
-                onChanged: (text) {},
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            CheckboxGroup(
-                labels: <String>[
-                  "BCG",
-                  "HBV 1",
-                  "OPV",
-                  "OPV 1",
-                  "PCV 1",
-                  "Rotarix 1",
-                  "Pentavalent 1",
-                  "OPV 2",
-                  "Rotarix 2",
-                  "PCV 2",
-                  "Pentavalent 2",
-                  "OPV 3",
-                  "PCV 3",
-                  "IPV",
-                  "Rotarix 3",
-                  "Pentavalent 3",
-                  "Vitamin A1",
-                  "Measles Vaccine",
-                  "Yellow Fever vaccine",
-                  "Meningitis vaccine",
-                  "Vitamin A2",
-                  "OPV booster",
-                  "Measles 2",
-                  "Typhoid Vaccine",
-                ],
-                onSelected: (List<String> checked) {
-                  if (this.mounted) {
-                    setState(() {
-                      vaccines = checked;
-                    });
-                  }
-                }),
+            hasId == false
+                ? Container(
+                    margin: EdgeInsets.symmetric(horizontal: 23),
+                    child: InputText(
+                      cursorColor: RemColors.green,
+                      obscureText: false,
+                      label: "Immunization Number",
+                      focusColor: RemColors.green,
+                      borderColor: Colors.grey,
+                      controller: reg,
+                      onChanged: (text) {},
+                    ),
+                  )
+                : Container(),
+            hasId == false ? Container() : buildCheckbox(),
             SizedBox(
               height: 20,
             ),
             _success.length > 0 ? successWidget() : errorWidget(),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 65),
-              child: Center(
-                child: _loading == false
-                    ? ButtonWidget(
-                        color: Colors.orange,
-                        onTap: () {
-                          scan();
-                          validateInput();
-                        },
-                        shadow: Color.fromRGBO(234, 154, 16, 0.72),
-                        text: "Capture QR Code",
-                      )
-                    : CircularProgressIndicator(),
-              ),
+              child: hasId == false
+                  ? Center(
+                      child: _loading == false
+                          ? ButtonWidget(
+                              color: Colors.orange,
+                              onTap: () {
+                                scan();
+                                validateInput();
+                              },
+                              shadow: Color.fromRGBO(234, 154, 16, 0.72),
+                              text: "Capture QR Code",
+                            )
+                          : CircularProgressIndicator(),
+                    )
+                  : Container(),
             ),
             SizedBox(
               height: 30,
             ),
             Container(
               margin: EdgeInsets.only(left: 55, right: 55, bottom: 40),
-              child: _loading == false
-                  ? ButtonWidget(
-                      color: RemColors.green,
-                      onTap: () {
-                        setState(() {
-                          _success = '';
-                          _error = '';
-                        });
-                        _getLocation();
-                        if (connectionBloc.connected == false) {
-                          save();
-                        } else {
-                          submit();
-                        }
-                      },
-                      shadow: Color.fromRGBO(70, 193, 13, 0.46),
-                      text: "Confirm Immunization",
-                    )
-                  : Container(),
+              child: _loading == false ? buildButtonWidget() : Container(),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildButtonWidget() {
+    if (hasId == true) {
+      return Center(
+        child: _loading == false
+            ? ButtonWidget(
+                color: RemColors.green,
+                onTap: () {
+                  setState(() {
+                    _success = '';
+                    _error = '';
+                  });
+                  _getLocation();
+                  if (connectionBloc.connected == false) {
+                    save();
+                  } else {
+                    submit();
+                  }
+                },
+                shadow: Color.fromRGBO(70, 193, 13, 0.46),
+                text: "Confirm Immunization",
+              )
+            : CircularProgressIndicator(),
+      );
+    }
+    return ButtonWidget(
+      color: RemColors.green,
+      onTap: () {
+        setState(() {
+          _success = '';
+          _error = '';
+        });
+        if (connectionBloc.connected == false) {
+          save();
+          setState(() {
+            _error = 'Must Be connected To Internet to get Vaccines';
+          });
+        } else {
+          getChildId(reg.text);
+        }
+      },
+      shadow: Color.fromRGBO(70, 193, 13, 0.46),
+      text: "Get Vaccines",
+    );
+  }
+
+  Widget buildCheckbox() {
+    List im = <String>[];
+
+    // print(childVaccines);
+
+    for (var obj in childVaccines) {
+      im.add(obj);
+
+      labels.removeWhere((item) => im.contains(item));
+      // print(labels);
+    }
+
+    return Column(
+      children: <Widget>[
+        // SizedBox(
+        //   height: 30,
+        // ),
+        labels.length == 0
+            ? Text(
+                'Select vaccines for $childName',
+                style: TextStyle(fontSize: 17),
+              )
+            : Text(
+                'No more vaccines for $childName',
+                style: TextStyle(fontSize: 17),
+              ),
+        SizedBox(
+          height: 10,
+        ),
+        CheckboxGroup(
+            labels: labels,
+            disabled: im,
+            // checked: im,
+            onSelected: (List<String> checked) {
+              if (this.mounted) {
+                setState(() {
+                  vaccines = checked;
+                });
+              }
+            }),
+        SizedBox(
+          height: 20,
+        ),
+        Text(
+          'Vaccines Taken:',
+          style: TextStyle(fontSize: 17),
+        ),
+        ListView.builder(
+          physics: ClampingScrollPhysics(),
+          shrinkWrap: true,
+          padding: EdgeInsets.only(
+            left: 40.0,
+          ),
+          itemCount: im.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(im[index]),
+                SizedBox(
+                  height: 10,
+                )
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -521,6 +667,28 @@ class _ConfirmImmunizationState extends State<ConfirmImmunization> {
           userLocation = currentLocation;
         });
       }
+    } on PlatformException catch (e) {
+      print(e);
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Location Error'),
+            content: SingleChildScrollView(
+                child: Text(
+                    "Please check that your GPS is on and that you have granted the app location access")),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Done'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } catch (e) {
       currentLocation = null;
       print(e);

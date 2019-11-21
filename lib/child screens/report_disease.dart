@@ -49,30 +49,274 @@ class _ReportDiseaseState extends State<ReportDisease> {
     "Select Local Government",
   ];
 
+  switches() {
+    switch (selectedStateIndex) {
+      case 1:
+        {
+          locals.clear();
+          locals.addAll(Lists.abia);
+        }
+        break;
+
+      case 2:
+        {
+          locals.clear();
+          locals.addAll(Lists.adamawa);
+        }
+        break;
+
+      case 3:
+        {
+          locals.clear();
+          locals.addAll(Lists.akwaIbom);
+        }
+        break;
+
+      case 4:
+        {
+          locals.clear();
+          locals.addAll(Lists.anambra);
+        }
+        break;
+
+      case 5:
+        {
+          locals.clear();
+          locals.addAll(Lists.bauchi);
+        }
+        break;
+
+      case 6:
+        {
+          locals.clear();
+          locals.addAll(Lists.bayelsa);
+        }
+        break;
+
+      case 7:
+        {
+          locals.clear();
+          locals.addAll(Lists.benue);
+        }
+        break;
+
+      case 8:
+        {
+          locals.clear();
+          locals.addAll(Lists.borno);
+        }
+        break;
+
+      case 9:
+        {
+          locals.clear();
+          locals.addAll(Lists.crossRiver);
+        }
+        break;
+
+      case 10:
+        {
+          locals.clear();
+          locals.addAll(Lists.delta);
+        }
+        break;
+
+      case 11:
+        {
+          locals.clear();
+          locals.addAll(Lists.ebonyi);
+        }
+        break;
+
+      case 12:
+        {
+          locals.clear();
+          locals.addAll(Lists.enugu);
+        }
+        break;
+
+      case 13:
+        {
+          locals.clear();
+          locals.addAll(Lists.edo);
+        }
+        break;
+
+      case 14:
+        {
+          locals.clear();
+          locals.addAll(Lists.ekiti);
+        }
+        break;
+
+      case 15:
+        {
+          locals.clear();
+          locals.addAll(Lists.fct);
+        }
+        break;
+
+      case 16:
+        {
+          locals.clear();
+          locals.addAll(Lists.gombe);
+        }
+        break;
+
+      case 17:
+        {
+          locals.clear();
+          locals.addAll(Lists.imo);
+        }
+        break;
+
+      case 18:
+        {
+          locals.clear();
+          locals.addAll(Lists.jigawa);
+        }
+        break;
+
+      case 19:
+        {
+          locals.clear();
+          locals.addAll(Lists.kaduna);
+        }
+        break;
+
+      case 20:
+        {
+          locals.clear();
+          locals.addAll(Lists.kano);
+        }
+        break;
+
+      case 21:
+        {
+          locals.clear();
+          locals.addAll(Lists.katsina);
+        }
+        break;
+
+      case 22:
+        {
+          locals.clear();
+          locals.addAll(Lists.kebbi);
+        }
+        break;
+
+      case 23:
+        {
+          locals.clear();
+          locals.addAll(Lists.kogi);
+        }
+        break;
+
+      case 24:
+        {
+          locals.clear();
+          locals.addAll(Lists.kwara);
+        }
+        break;
+
+      case 25:
+        {
+          locals.clear();
+          locals.addAll(Lists.lagos);
+        }
+        break;
+
+      case 26:
+        {
+          locals.clear();
+          locals.addAll(Lists.nasarawa);
+        }
+        break;
+
+      case 27:
+        {
+          locals.clear();
+          locals.addAll(Lists.niger);
+        }
+        break;
+
+      case 28:
+        {
+          locals.clear();
+          locals.addAll(Lists.ogun);
+        }
+        break;
+
+      case 29:
+        {
+          locals.clear();
+          locals.addAll(Lists.ondo);
+        }
+        break;
+
+      case 30:
+        {
+          locals.clear();
+          locals.addAll(Lists.osun);
+        }
+        break;
+
+      case 31:
+        {
+          locals.clear();
+          locals.addAll(Lists.oyo);
+        }
+        break;
+
+      case 32:
+        {
+          locals.clear();
+          locals.addAll(Lists.plateau);
+        }
+        break;
+
+      case 33:
+        {
+          locals.clear();
+          locals.addAll(Lists.rivers);
+        }
+        break;
+
+      case 34:
+        {
+          locals.clear();
+          locals.addAll(Lists.sokoto);
+        }
+        break;
+
+      case 35:
+        {
+          locals.clear();
+          locals.addAll(Lists.taraba);
+        }
+        break;
+
+      case 36:
+        {
+          locals.clear();
+          locals.addAll(Lists.yobe);
+        }
+        break;
+
+      case 37:
+        {
+          locals.clear();
+          locals.addAll(Lists.zamfara);
+        }
+        break;
+
+      default:
+    }
+  }
+
   //dropdown indexes
   int selectedStateIndex = 0;
   int selectedLocalIndex = 0;
-
-  Future getLocalGovt() async {
-    var state = selectedState['text'];
-    try {
-      http.Response response = await http.get(
-        "http://locationsng-api.herokuapp.com/api/v1/states/$state/lgas",
-        // headers: {
-        //   HttpHeaders.contentTypeHeader: 'application/json',
-        //   HttpHeaders.authorizationHeader: "Bearer $token"
-        // },
-      );
-      List body = json.decode(response.body);
-      List newLocals = ["Select Local Government"]..addAll(body);
-
-      setState(() {
-        locals = newLocals;
-      });
-
-      print(newLocals);
-    } catch (e) {}
-  }
 
   Widget stateDropDown(String text, String hint, List items) {
     return Column(
@@ -128,7 +372,8 @@ class _ReportDiseaseState extends State<ReportDisease> {
                       setState(() {
                         selectedState = obj;
                         selectedStateIndex = obj['value'];
-                        getLocalGovt();
+                        // getLocalGovt();
+                        switches();
                       });
                     }),
               ),
@@ -374,7 +619,6 @@ class _ReportDiseaseState extends State<ReportDisease> {
 
           if (response.statusCode == 200) {
             setState(() {
-              
               _success = "Disease Reported";
               _loading = false;
             });
@@ -538,7 +782,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
           "Report Disease",
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 25.0,
+            fontSize: 17.0,
             fontFamily: "Poppins",
             color: Colors.white,
           ),

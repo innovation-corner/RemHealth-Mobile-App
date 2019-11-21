@@ -10,6 +10,7 @@ import 'package:immunization_mobile/config/auth_details.dart';
 import 'package:immunization_mobile/custom_widgets/button_widget.dart';
 import 'package:immunization_mobile/custom_widgets/custom_colors.dart';
 import 'package:immunization_mobile/custom_widgets/input_text.dart';
+import 'package:location/location.dart';
 import 'package:path_provider/path_provider.dart';
 import '../lists.dart';
 import 'package:http/http.dart' as http;
@@ -36,7 +37,29 @@ class _UpdateChildState extends State<UpdateChild> {
     selectedGender = Lists.gender[0];
     selectedDate = DateTime.now();
     runCheck();
+    _getLocation();
   }
+
+  //location
+  var location = new Location();
+
+  Future<Map<String, double>> _getLocation() async {
+    var currentLocation = <String, double>{};
+    try {
+      currentLocation = await location.getLocation();
+      if (this.mounted) {
+        setState(() {
+          userLocation = currentLocation;
+        });
+      }
+    } catch (e) {
+      currentLocation = null;
+      print(e);
+    }
+    return currentLocation;
+  }
+
+  Map<String, double> userLocation;
 
   //barcode details
   String barcode = "";
@@ -432,27 +455,6 @@ class _UpdateChildState extends State<UpdateChild> {
     return Container();
   }
 
-  Future getLocalGovt(String state) async {
-    // var state = selectedState['text'] || phcSelectedState['text'];
-    try {
-      http.Response response = await http.get(
-        "http://locationsng-api.herokuapp.com/api/v1/states/$state/lgas",
-        // headers: {
-        //   HttpHeaders.contentTypeHeader: 'application/json',
-        //   HttpHeaders.authorizationHeader: "Bearer $token"
-        // },
-      );
-      List body = json.decode(response.body);
-      List newLocals = ["Select Local Government"]..addAll(body);
-
-      setState(() {
-        locals = newLocals;
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
-
   Widget stateDropDown(String text, String hint, List items) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -641,7 +643,8 @@ class _UpdateChildState extends State<UpdateChild> {
                       setState(() {
                         phcSelectedState = obj;
                         phcSelectedStateIndex = obj['value'];
-                        getLocalGovt(phcSelectedState['text']);
+                        // getLocalGovt(phcSelectedState['text']);
+                        switches();
                       });
                     }),
               ),
@@ -1016,7 +1019,9 @@ class _UpdateChildState extends State<UpdateChild> {
       'lga': selectedLocalGovt,
       'language': selectedLanguage,
       'gender': selectedGender,
-      'qrCode': barcode
+      'qrCode': barcode,
+      'lat': userLocation["latitude"].toString(),
+      'lon': userLocation["longitude"].toString(),
     };
 
     childList.add(data);
@@ -1063,7 +1068,9 @@ class _UpdateChildState extends State<UpdateChild> {
         'lga': selectedLocalGovt,
         'language': selectedLanguage,
         'gender': selectedGender,
-        'qrCode': barcode
+        'qrCode': barcode,
+        'lat': userLocation["latitude"].toString(),
+        'lon': userLocation["longitude"].toString(),
       };
 
       try {
@@ -1122,7 +1129,7 @@ class _UpdateChildState extends State<UpdateChild> {
           "Update Child Details",
           style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 25.0,
+            fontSize: 17.0,
             fontFamily: "Poppins",
             color: Colors.white,
           ),

@@ -13,6 +13,7 @@ import 'package:immunization_mobile/custom_widgets/input_text.dart';
 import 'package:immunization_mobile/home_page.dart';
 import 'package:immunization_mobile/lists.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 
 class SignUp extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _SignUpState extends State<SignUp> {
     super.initState();
     selectedState = Lists.stateList[0];
     selectedLocalGovt = Lists.localGovtList[0];
+    _getLocation();
   }
 
   // controllers for our inputs
@@ -358,6 +360,11 @@ class _SignUpState extends State<SignUp> {
     return true;
   }
 
+  //location
+  var location = new Location();
+
+  Map<String, double> userLocation;
+
   // stores the error state
   String _error = "";
   String _phoneError = "";
@@ -420,6 +427,8 @@ class _SignUpState extends State<SignUp> {
       "state": selectedState['text'],
       "lga": selectedLocalGovt,
       "contactName": contactName.text.trim(),
+      'lat': userLocation["latitude"].toString(),
+      'lon': userLocation["longitude"].toString(),
     };
 
     if (validateInput()) {
@@ -627,7 +636,7 @@ class _SignUpState extends State<SignUp> {
                   "REGISTER",
                   style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 25.0,
+                      fontSize: 17.0,
                       fontFamily: "Poppins",
                       color: Colors.grey),
                 ),
@@ -769,6 +778,7 @@ class _SignUpState extends State<SignUp> {
                       ? ButtonWidget(
                           color: RemColors.green,
                           onTap: () {
+                            _getLocation();
                             validateInput();
                             register();
                           },
@@ -810,5 +820,21 @@ class _SignUpState extends State<SignUp> {
         ),
       ),
     );
+  }
+
+  Future<Map<String, double>> _getLocation() async {
+    var currentLocation = <String, double>{};
+    try {
+      currentLocation = await location.getLocation();
+      if (this.mounted) {
+        setState(() {
+          userLocation = currentLocation;
+        });
+      }
+    } catch (e) {
+      currentLocation = null;
+      print(e);
+    }
+    return currentLocation;
   }
 }

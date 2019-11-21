@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
           "Rem Health",
           style: TextStyle(
               fontWeight: FontWeight.w600,
-              fontSize: 25.0,
+              fontSize: 17.0,
               fontFamily: "Poppins",
               color: Colors.white),
         ),
@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                               icon: Icon(
                                 Icons.check_box,
                                 color: RemColors.white,
-                                size: 32,
+                                size: 30,
                               ),
                               firstText: "Confirm Immunization",
                               secondText: "",
@@ -272,7 +272,7 @@ class MenuText extends StatelessWidget {
               style: TextStyle(
                 fontFamily: "Lato",
                 color: textColor,
-                fontSize: 18,
+                fontSize: 13.5,
                 fontWeight: FontWeight.bold,
               ),
             ),

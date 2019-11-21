@@ -23,4 +23,13 @@ class Api {
 
   //report disease
   static reportDisease(id) => baseUrl + "disease/new/$id";
+
+  //get child details with IM code
+  static getDetailsByIm(code) => baseUrl + "info/child/$code";
+
+  //list child Immunizations
+  static listImmunization(id) => baseUrl + "immunization/child/$id";
+
+  //list vaccines 
+  static String getVaccines = baseUrl + "vaccine/get";
 }
