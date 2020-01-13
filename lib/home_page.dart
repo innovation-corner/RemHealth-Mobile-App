@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:immunization_mobile/auth/hospital_login.dart';
-import 'package:immunization_mobile/child%20screens/confirm_immunization.dart';
-import 'package:immunization_mobile/child%20screens/register_child.dart';
-import 'package:immunization_mobile/child%20screens/report_disease.dart';
-import 'package:immunization_mobile/child%20screens/update_child.dart';
+import 'package:immunization_mobile/child_screens/confirm_immunization.dart';
+import 'package:immunization_mobile/child_screens/register_child.dart';
+import 'package:immunization_mobile/child_screens/report_disease.dart';
+import 'package:immunization_mobile/child_screens/update_child.dart';
 import 'package:immunization_mobile/config/auth_details.dart';
 
 import 'bloc/authentication_bloc.dart';
@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
           "Rem Health",
           style: TextStyle(
               fontWeight: FontWeight.w600,
-              fontSize: 17.0,
+              fontSize: 25.0,
               fontFamily: "Poppins",
               color: Colors.white),
         ),
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
                         height: 180,
                         width: MediaQuery.of(context).size.width * 0.415,
                         decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: Colors.orange,
                             boxShadow: [
                               BoxShadow(
                                 color: Color.fromRGBO(0, 0, 0, 0.1),
@@ -64,13 +64,8 @@ class _HomePageState extends State<HomePage> {
                         child: Stack(
                           children: <Widget>[
                             MenuText(
-                              icon: Icon(
-                                Icons.person_add,
-                                color: RemColors.white,
-                                size: 32,
-                              ),
-                              firstText: "Register Child",
-                              secondText: "",
+                              firstText: "Register",
+                              secondText: "Child",
                               textColor: Colors.white,
                             )
                           ],
@@ -86,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                         height: 180,
                         width: MediaQuery.of(context).size.width * 0.415,
                         decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: Colors.blueGrey,
                             boxShadow: [
                               BoxShadow(
                                 color: Color.fromRGBO(0, 0, 0, 0.1),
@@ -98,13 +93,8 @@ class _HomePageState extends State<HomePage> {
                         child: Stack(
                           children: <Widget>[
                             MenuText(
-                              icon: Icon(
-                                Icons.update,
-                                color: RemColors.white,
-                                size: 32,
-                              ),
                               firstText: "Update Child",
-                              secondText: "",
+                              secondText: "Details",
                               textColor: Colors.white,
                             )
                           ],
@@ -140,13 +130,8 @@ class _HomePageState extends State<HomePage> {
                         child: Stack(
                           children: <Widget>[
                             MenuText(
-                              icon: Icon(
-                                Icons.check_box,
-                                color: RemColors.white,
-                                size: 30,
-                              ),
-                              firstText: "Confirm Immunization",
-                              secondText: "",
+                              firstText: "Confirm",
+                              secondText: "Immunization",
                               textColor: Colors.white,
                             )
                           ],
@@ -174,13 +159,8 @@ class _HomePageState extends State<HomePage> {
                         child: Stack(
                           children: <Widget>[
                             MenuText(
-                              icon: Icon(
-                                Icons.error,
-                                color: RemColors.white,
-                                size: 32,
-                              ),
-                              firstText: "Report Disease",
-                              secondText: "",
+                              firstText: "Report",
+                              secondText: "Disease",
                               textColor: Colors.white,
                             )
                           ],
@@ -250,47 +230,38 @@ class MenuText extends StatelessWidget {
   final String firstText;
   final String secondText;
   final Color textColor;
-  final Icon icon;
 
-  const MenuText(
-      {Key key, this.firstText, this.secondText, this.textColor, this.icon})
+  const MenuText({Key key, this.firstText, this.secondText, this.textColor})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(margin: EdgeInsets.only(top: 50), child: icon),
-          Container(
-            margin: EdgeInsets.only(left: 25, right: 25),
-            padding: EdgeInsets.only(top: 10),
-            child: Text(
+    return Positioned(
+        top: 70,
+        left: 10,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
               firstText,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: "Lato",
                 color: textColor,
-                fontSize: 13.5,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 10),
-            child: Text(
+            Text(
               secondText,
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontFamily: "Lato",
                   color: textColor,
-                  fontSize: 18,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
   }
 }
