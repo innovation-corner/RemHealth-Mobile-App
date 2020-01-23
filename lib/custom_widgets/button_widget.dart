@@ -29,7 +29,7 @@ class _ButtonWidgetState extends State<ButtonWidget> {
               0.0, // horizontal, move right 10
               5.0, // vertical, move down 10
             ),
-          )
+          ),
         ], borderRadius: BorderRadius.circular(6), color: Colors.blue),
         child: Center(
             child: Text(widget.text,
