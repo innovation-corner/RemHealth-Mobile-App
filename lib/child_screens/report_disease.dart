@@ -54,6 +54,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 1:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.abia);
         }
         break;
@@ -61,6 +62,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 2:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.adamawa);
         }
         break;
@@ -68,6 +70,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 3:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.akwaIbom);
         }
         break;
@@ -75,6 +78,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 4:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.anambra);
         }
         break;
@@ -82,6 +86,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 5:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.bauchi);
         }
         break;
@@ -89,6 +94,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 6:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.bayelsa);
         }
         break;
@@ -96,6 +102,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 7:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.benue);
         }
         break;
@@ -103,6 +110,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 8:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.borno);
         }
         break;
@@ -110,6 +118,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 9:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.crossRiver);
         }
         break;
@@ -117,6 +126,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 10:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.delta);
         }
         break;
@@ -124,6 +134,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 11:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.ebonyi);
         }
         break;
@@ -131,6 +142,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 12:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.enugu);
         }
         break;
@@ -138,6 +150,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 13:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.edo);
         }
         break;
@@ -145,6 +158,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 14:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.ekiti);
         }
         break;
@@ -152,6 +166,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 15:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.fct);
         }
         break;
@@ -159,6 +174,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 16:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.gombe);
         }
         break;
@@ -166,6 +182,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 17:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.imo);
         }
         break;
@@ -173,6 +190,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 18:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.jigawa);
         }
         break;
@@ -180,6 +198,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 19:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.kaduna);
         }
         break;
@@ -187,6 +206,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 20:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.kano);
         }
         break;
@@ -194,6 +214,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 21:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.katsina);
         }
         break;
@@ -201,6 +222,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 22:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.kebbi);
         }
         break;
@@ -208,6 +230,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 23:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.kogi);
         }
         break;
@@ -215,6 +238,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 24:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.kwara);
         }
         break;
@@ -222,6 +246,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 25:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.lagos);
         }
         break;
@@ -229,6 +254,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 26:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.nasarawa);
         }
         break;
@@ -236,6 +262,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 27:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.niger);
         }
         break;
@@ -243,6 +270,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 28:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.ogun);
         }
         break;
@@ -250,6 +278,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 29:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.ondo);
         }
         break;
@@ -257,6 +286,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 30:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.osun);
         }
         break;
@@ -264,6 +294,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 31:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.oyo);
         }
         break;
@@ -271,6 +302,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 32:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.plateau);
         }
         break;
@@ -278,6 +310,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 33:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.rivers);
         }
         break;
@@ -285,6 +318,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 34:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.sokoto);
         }
         break;
@@ -292,6 +326,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 35:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.taraba);
         }
         break;
@@ -299,6 +334,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 36:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.yobe);
         }
         break;
@@ -306,6 +342,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
       case 37:
         {
           locals.clear();
+          locals.add("Select Local Government");
           locals.addAll(Lists.zamfara);
         }
         break;
@@ -428,10 +465,10 @@ class _ReportDiseaseState extends State<ReportDisease> {
                           color: Colors.grey),
                     ),
                     value: selectedStateIndex == 0
-                        ? items[0]
-                        : items[selectedLocalIndex],
+                        ? locals[0]
+                        : locals[selectedLocalIndex],
                     items: selectedStateIndex != 0
-                        ? items.map((obj) {
+                        ? locals.map((obj) {
                             return new DropdownMenuItem(
                               value: obj,
                               child: new Text(obj),
@@ -441,7 +478,7 @@ class _ReportDiseaseState extends State<ReportDisease> {
                     onChanged: (obj) {
                       setState(() {
                         selectedLocalGovt = obj;
-                        selectedLocalIndex = items.indexOf(obj);
+                        selectedLocalIndex = locals.indexOf(obj);
                       });
                     }),
               ),
