@@ -907,7 +907,7 @@ class _RegisterChildState extends State<RegisterChild> {
 
       Map obj = {
         'name': childName.text,
-        'dob': selectedDate.toString(),
+        'dob': selectedDate.toIso8601String(),
         'phonenumber': phoneNumber.text,
         'state': selectedState['text'],
         'lga': selectedLocalGovt,
